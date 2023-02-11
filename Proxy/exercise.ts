@@ -20,6 +20,26 @@ class ProxyImage implements ImageInterface {
     protected image;
 
     // @todo here the code to implement
+    
+    protected cachedImage: any;
+    protected filename: any;
+
+    constructor(image: any) {
+        this.image = image;
+        this.filename = filename;
+        this.loadFromDisk();
+    }
+    loadFromDisk() {
+        console.log(`Loading ${this.filename}`);
+    }
+
+    display(): void {
+        if (this.cachedImage === null) {
+            this.loadFromDisk();
+            this.cachedImage = this.image;
+        }
+        console.log(`Display ${this.filename}`);
+    }
 }
 
 // Usage example
