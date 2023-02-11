@@ -4,7 +4,7 @@ interface HtmlElement {
 }
 
 class InputText implements HtmlElement {
-    protected name;
+    protected name: string;
     constructor(name: string) {
         this.name = name;
     }
@@ -17,14 +17,26 @@ class InputText implements HtmlElement {
 }
 
 abstract class HtmlDecorator implements HtmlElement {
-    protected element;
+    protected element: HtmlElement;
 
     // @todo here the code to implement
+    
+    constructor(element: HtmlElement) {
+        this.element = element;
+    }
+
+    getName(): string {
+        return this.element.getName();
+    }
+
+    __toString(): string {
+        return this.element.__toString();
+    }
 }
 
 class LabelDecorator extends HtmlDecorator {
-    protected label;
-    setLabel(label) {
+    protected label: any;
+    setLabel(label: string) {
         this.label = label;
     }
     __toString() {
@@ -37,8 +49,8 @@ class LabelDecorator extends HtmlDecorator {
 }
 
 class ErrorDecorator extends HtmlDecorator {
-    protected error;
-    setError(message) {
+    protected error: any;
+    setError(message: string) {
         this.error = message;
     }
     __toString() {
@@ -49,17 +61,17 @@ class ErrorDecorator extends HtmlDecorator {
 }
 
 const input = new InputText('nickname');
-console.log(`InputText without decorator: ${input}`);
+console.log(`InputText without decorator: ${input.__toString()}`);
 
 const labelled = new LabelDecorator(input);
 labelled.setLabel('Nickname:');
-console.log(`InputText with LabelDecorator:${labelled}`);
+console.log(`InputText with LabelDecorator:${labelled.__toString()}`);
 
 const error = new ErrorDecorator(input);
 error.setError('You must enter a unique nickname');
-console.log(`InputText with ErrorDecorator:${error}`);
+console.log(`InputText with ErrorDecorator:${error.__toString()}`);
 
 // Label + Error
 const labelledError = new ErrorDecorator(labelled);
 labelledError.setError('You must enter a unique nickname');
-console.log(`InputText with LabelDecorator and ErrorDecorator:${labelledError}`);
+console.log(`InputText with LabelDecorator and ErrorDecorator:${labelledError.__toString()}`);
