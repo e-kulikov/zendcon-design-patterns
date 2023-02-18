@@ -2,9 +2,9 @@ interface ImageInterface {
     display(): void;
 }
 
-class Image implements ImageInterface {
-    protected filename;
-    constructor(filename) {
+export class CustomImage implements ImageInterface {
+    protected filename: string;
+    constructor(filename: string) {
         this.filename = filename;
         this.loadFromDisk();
     }
@@ -12,23 +12,24 @@ class Image implements ImageInterface {
         console.log(`Loading ${this.filename}`);
     }
     display() {
-        console.log(`Display ${this.filename}`);
+        return `Display ${this.filename}`;
     }
 }
 
-class ProxyImage implements ImageInterface {
+export class ProxyImage implements ImageInterface {
     protected image;
 
     // @todo here the code to implement
+
+    protected filename;
+    constructor(filename: any) {
+        this.filename = filename;
+    }
+
+    display() {
+        if (!this.image) {
+            this.image = new CustomImage(this.filename);
+        }
+        return this.image.display();
+    }
 }
-
-// Usage example
-
-const filename = 'test.png';
-
-const image1 = new Image(filename); // loading necessary
-image1.display(); // loading unnecessary
-
-const image2 = new ProxyImage(filename); // loading unnecessary
-image2.display(); // loading necessary
-image2.display(); // loading unnecessary
