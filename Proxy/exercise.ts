@@ -20,4 +20,16 @@ export class ProxyImage implements ImageInterface {
     protected image;
 
     // @todo here the code to implement
+
+    protected filename;
+    constructor(filename: any) {
+        this.filename = filename;
+    }
+
+    display() {
+        if (!this.image) {
+            this.image = new CustomImage(this.filename);
+        }
+        return this.image.display();
+    }
 }
