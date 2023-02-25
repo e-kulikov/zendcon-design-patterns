@@ -41,13 +41,27 @@ export class Merchant {
 }
 
 interface PaymentInterface {
-    // todo: here the code to implement
+    collectMoney(price: number): boolean;
 }
 
 export class CreditCardAdapter implements PaymentInterface {
-    // todo: here the code to implement
+    #creditCard: CreditCard;
+    constructor(creditCard: CreditCard) {
+        this.#creditCard = creditCard;
+    }
+    collectMoney(price: number): boolean {
+        if (this.#creditCard.authorizeTransaction(price)) return true;
+        return false;
+    }
 }
 
 export class PayPalAdapter implements PaymentInterface {
-    // todo: here the code to implement
+    #payPal: PayPal;
+    constructor(payPal: PayPal) {
+        this.#payPal = payPal;
+    }
+    collectMoney(price: number): boolean {
+        if (this.#payPal.transfer("payments@merchant.shop", price)) return true;
+        return false;
+    }
 }
