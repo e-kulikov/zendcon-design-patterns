@@ -27,6 +27,7 @@ export interface ShopFactoryInterface {
 export interface ProductInterface {
     get productCode(): keyof ProductData;
     get productDescription(): ProductData[keyof ProductData][0];
+    get productWeight(): ProductData[keyof ProductData][1];
 }
 export interface ShippingMethodInterface {
     get courierName(): keyof ShippingMethodData;
