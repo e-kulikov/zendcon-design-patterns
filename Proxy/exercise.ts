@@ -1,5 +1,5 @@
 interface ImageInterface {
-    display(): void;
+    display(): string;
 }
 
 export class CustomImage implements ImageInterface {
@@ -17,7 +17,13 @@ export class CustomImage implements ImageInterface {
 }
 
 export class ProxyImage implements ImageInterface {
-    protected image;
+    protected image?: ImageInterface;
+    constructor(protected filename: any) {}
 
-    // @todo here the code to implement
+    display() {
+        if (!this.image) {
+            this.image = new CustomImage(this.filename);
+        }
+        return this.image.display();
+    }
 }
