@@ -17,9 +17,15 @@ export class InputText implements HtmlElement {
 }
 
 abstract class HtmlDecorator implements HtmlElement {
-    protected element;
+    constructor(protected element: HtmlElement) {}
 
-    // @todo here the code to implement
+    public getName(): string {
+        return this.element.getName();
+    }
+
+    public toString(): string {
+        return this.element.toString();
+    }
 }
 
 export class LabelDecorator extends HtmlDecorator {
