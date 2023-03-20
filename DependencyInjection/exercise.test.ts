@@ -60,7 +60,7 @@ describe('DependencyInjection', () => {
             productsManager.addItem(testItem2);
 
             expect(addNewProductSpy).toHaveBeenCalledTimes(1);
-            expect(addNewProductSpy).toHaveBeenCalledWith(testItem1);
+            expect(addNewProductSpy).toHaveBeenCalledWith(testItem2);
 
             expect(addNewUserSpy).not.toHaveBeenCalled();
         });

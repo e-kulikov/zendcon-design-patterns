@@ -43,6 +43,45 @@ export class Database<T> {
     }
 }
 
-export class UsersManager<T> {}
+export class UsersManager<T> {
+    constructor(protected db: Database<T>) {}
 
-export class ProductsListManager<T> {}
+    search(id: DBIndexType): string {
+        const data = this.db.getByID(id);
+        if (data !== null) {
+            return `User ID ${id}: ${JSON.stringify(data)}`;
+        } else {
+            return `Sorry, there is no records for this ID`;
+        }
+    }
+
+    replace(id: DBIndexType, userData: T): string {
+        try {
+            this.db.setByID(id, userData);
+            return `User data replaced successfully`;
+        } catch (e) {
+            return `There is an error during replacement: ${e}`;
+        }
+    }
+
+    addNewUser(userData: T): string {
+        const id = this.db.addNewRecord(userData);
+        return `A new user added. User ID: ${id}`;
+    }
+}
+
+export class ProductsListManager<T> {
+    constructor(protected db: Database<T>) {}
+
+    getItem(id: DBIndexType) {
+        return this.db.getByID(id);
+    }
+
+    replaceItem(id: DBIndexType, item: T) {
+        this.db.setByID(id, item);
+    }
+
+    addItem(item: T) {
+        return { _id: this.db.addNewRecord(item) };
+    }
+}
