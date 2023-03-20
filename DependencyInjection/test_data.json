@@ -1,0 +1,30 @@
+{
+  "users": [
+    {
+      "_id": "c1468f5a-265c-4d52-b798-ee43a480f511",
+      "login": "user 1",
+      "name": "Jean Torres",
+      "dob": "02.01.1987",
+      "phone": "(251) 671-0988"
+    },
+    {
+      "login": "user 24",
+      "name": "Anthony Pearson",
+      "dob": "06.07.1960",
+      "phone": "(316) 939-5592"
+    },
+    {
+      "login": "user 32",
+      "name": "Lance Garrett",
+      "dob": "10.02.1998",
+      "phone": "(470) 304-3493"
+    }
+  ],
+  "products": [
+    {"title":"Fireball Whisky","amount":4,"price":7.55},
+    {"title":"Oil - Hazelnut","amount":1,"price":9.72},
+    {"title":"Wine - Bouchard La Vignee Pinot","amount":3,"price":9.53},
+    {"title":"Cheese - Blue","amount":2,"price":9.87},
+    {"title":"Oil - Macadamia","amount":1,"price":4.38}
+  ]
+}
