@@ -1,7 +1,7 @@
 Mapper
 ======
 
-Mapper patterns are used to translate data from one state into another. Most often, mappers are used to convert "flat" data into an object graph, or vice-versa, as you would do when savnig and retrieving objects from a database. The key point of the mapper pattern is that the objects don't need to be aware of the interfaces of the other states that the mapper may be aware of.
+Mapper patterns are used to translate data from one state into another. Most often, mappers are used to convert "flat" data into an object graph, or vice-versa, as you would do when saving and retrieving objects from a database. The key point of the mapper pattern is that the objects don't need to be aware of the interfaces of the other states that the mapper may be aware of.
 
 Mappers also promote loose coupling and separation of concerns. Many ORM systems use a datamapper pattern. Doctrine 2.x uses datamappers, whereas Doctrine 1.x used an ActiveRecord pattern, which does not allow for separation of business logic and persistence.
 
