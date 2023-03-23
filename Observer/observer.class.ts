@@ -30,3 +30,20 @@ export class Observer {
                 }
             }
 }
+
+export class LoggerObserver {
+    private events: any[] = [];
+
+    update(event: keyof InstanceType<any>, args: any[], result: unknown, instance?: EmitterInterface) {
+        this.events.push({ event, args, result, instance });
+        (this as any).log({ event, args, result, instance });
+    }
+
+    getEvents() {
+        return this.events;
+    }
+
+    clear() {
+        this.events = [];
+    }
+}

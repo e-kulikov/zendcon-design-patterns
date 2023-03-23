@@ -1,5 +1,5 @@
-import { EmitterInterface, Emitter } from "./emitter.class";
-import { ObserverInterface, Observer } from "./observer.class";
+import { EmitterInterface, Emitter, EmitterDecorator } from "./emitter.class";
+import { ObserverInterface, Observer, LoggerObserver } from "./observer.class";
 import { Logger as RawLogger, Product as RawProduct } from "./exercise";
 
 const logSpy = jest.spyOn(RawLogger.prototype, 'log');
@@ -11,7 +11,21 @@ const setProductSpy = jest.spyOn(RawProduct.prototype, 'setProduct');
 class Logger extends RawLogger {}
 
 @Emitter.decorate(['setProduct', 'getProduct'])
-class Product extends RawProduct {}
+class Product extends RawProduct {
+    /*getProduct(key: string): string {
+        const result = super.getProduct(key);
+        super.notify('getProduct', [key], result);
+
+        return result;
+    }
+
+    setProduct(key: string, value: any) {
+        const result = super.setProduct(key, value);
+
+        super.notify('setProduct', [key, value], result);
+        return result;
+    }*/
+}
 
 describe('Observer', () => {
     let product: Product;

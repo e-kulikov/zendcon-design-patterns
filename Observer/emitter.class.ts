@@ -41,3 +41,22 @@ export class Emitter {
                 }
             }
 }
+
+export class EmitterDecorator<T extends new (...args: any) => any> {
+    private observers: ObserverInterface[] = [];
+
+    attach(observer: ObserverInterface) {
+        this.observers.push(observer);
+    }
+
+    detach(observer: ObserverInterface) {
+        const currentIndex = this.observers.findIndex((current) => current === observer);
+        this.observers.splice(currentIndex, 1);
+    }
+
+    protected notify(event: keyof InstanceType<T>, args: any[], result: unknown) {
+        this.observers.forEach(observer => {
+            observer.update(event, args, result, this);
+        });
+    }
+}

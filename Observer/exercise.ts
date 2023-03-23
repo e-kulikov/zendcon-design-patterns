@@ -1,5 +1,10 @@
-export class Product {
-    constructor(private data: Record<string, any>) {}
+// import { EmitterDecorator } from "./emitter.class";
+// import { LoggerObserver } from "./observer.class";
+
+export class Product /*extends EmitterDecorator<typeof Product>*/ {
+    constructor(private data: Record<string, any>) {
+        // super();
+    }
 
     getProduct(key: string): string {
         return this.data[key];
@@ -10,8 +15,10 @@ export class Product {
     }
 }
 
-export class Logger {
-    constructor(private prefix: string) {}
+export class Logger /*extends LoggerObserver*/ {
+    constructor(private prefix: string) {
+        // super();
+    }
 
     log(eventObj: unknown) {
         console.log(this.prefix, eventObj);
