@@ -43,6 +43,35 @@ export class Database<T> {
     }
 }
 
-export class UsersManager<T> {}
+export class UsersManager<T> {
+    private dataBase: Database<T>;
+  
+    public constructor(dataBase: Database<T>) {
+        this.dataBase = dataBase;
+    }
+  
+    public search(id: DBIndexType) {
+        return `User ID ${id}: ${JSON.stringify(this.dataBase.getByID(id))}`;
+    }
+}
+  
+export class ProductsListManager<T> {
+    private dataBase: Database<T>;
 
-export class ProductsListManager<T> {}
+    public constructor(dataBase: Database<T>) {
+        this.dataBase = dataBase;
+    }
+
+    public getItem(id: DBIndexType) {
+        return this.dataBase.getByID(id);
+    }
+
+    public setItem(id: DBIndexType, item: T) {
+        return this.dataBase.setByID(id, item);
+    }
+
+    public addItem(item: T) {
+        const _id = this.dataBase.addNewRecord(item);
+        return { _id };
+    }
+}
