@@ -16,7 +16,11 @@ export class ProductCollection {
 
     filter(filterStrategy: ProductFilteringStrategy): ProductCollection {
         const filteredProducts: Product[] = [];
-        //@TODO use the strategy to filter products that don't meet criteria
+        this.products.forEach(product => {
+            if(filterStrategy.filter(product)) {
+                filteredProducts.push(product);
+            }
+        });
         return new ProductCollection(filteredProducts);
     }
 
@@ -30,9 +34,24 @@ export interface ProductFilteringStrategy {
 }
 
 export class ManufacturerFilter implements ProductFilteringStrategy {
-    //@TODO implement a strategy for filtering products by manufacturer
+    constructor(private manufacturer: string) {
+        this.manufacturer = manufacturer;
+    }
+    filter(product: Product): boolean {
+        return product.manufacturer === this.manufacturer ? true : false;
+    }
 }
 
 export class MaxPriceFilter implements ProductFilteringStrategy {
-    //@TODO implement a strategy for filtering products by maximum price
+    constructor(private maxPrice: number) {
+        this.maxPrice = maxPrice;
+    }
+    filter(product: Product): boolean {
+        if (product.listPrice && product.discountPercent) {
+            return product.listPrice - (product.listPrice * product.discountPercent) <= this.maxPrice;
+        } else if (product.listPrice) {
+            return product.listPrice <= this.maxPrice;
+        }
+        return false;
+    }
 }
