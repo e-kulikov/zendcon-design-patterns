@@ -1,26 +1,57 @@
-// import { EmitterDecorator } from "./emitter.class";
-// import { LoggerObserver } from "./observer.class";
+import { Component } from "./yaafuif";
+import { Subject } from "./subject";
 
-export class Product /*extends EmitterDecorator<typeof Product>*/ {
-    constructor(private data: Record<string, any>) {
-        // super();
+interface User {
+    id: string;
+    name: string;
+}
+
+@Subject<User[]>()
+export class UserStore {
+    private users: User[] = [];
+
+    getUserById(id: string): User | undefined {
+        return this.users.find(user => user.id === id);
     }
 
-    getProduct(key: string): string {
-        return this.data[key];
+    deleteUserById(id: string): void {
+        this.users = this.users.filter(user => user.id !== id);
+        (this as unknown as Subject<User[]>).notify(this.users);
     }
 
-    setProduct(key: string, value: any): void {
-        this.data[key] = value;
+    addUser(user: User): void {
+        this.users.push(user);
+        (this as unknown as Subject<User[]>).notify(this.users);
+    }
+
+    listUsers(): User[] {
+        return this.users;
     }
 }
 
-export class Logger /*extends LoggerObserver*/ {
-    constructor(private prefix: string) {
-        // super();
+@Component()
+export class UsersList implements Component {
+    private users?: User[];
+
+    constructor(private userService: Subject<User[]>) {}
+
+    updateUsers(users: User[]) {
+        this.users = users;
     }
 
-    log(eventObj: unknown) {
-        console.log(this.prefix, eventObj);
+    onInit(): () => void {
+        this.userService.subscribe(this.updateUsers);
+
+        return () => {
+            this.userService.unsubscribe(this.updateUsers);
+        }
+    }
+
+    render() {
+        if (!this.users) return null;
+
+        return `<ul>${this.users.map(
+            user => `<li id="${user.id}">${user.name}</li>`
+        )}</ul>`
     }
 }
