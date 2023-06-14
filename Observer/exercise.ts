@@ -1,12 +1,12 @@
-import { Component, ComponentStructure } from "./yaafuif";
-import { Subject } from "./subject";
+import { Component } from "./yaafuif";
+import {Subject} from "./subject";
 
 export interface User {
     id: string;
     name: string;
 }
 
-@Subject<User[]>()
+@Subject()
 export class UserStore {
     constructor(private users: User[] = []) {}
 
@@ -16,12 +16,12 @@ export class UserStore {
 
     deleteUserById(id: string): void {
         this.users = this.users.filter(user => user.id !== id);
-        (this as unknown as Subject<User[]>).notify(this.users);
+        (this as unknown as Subject).notify();
     }
 
     addUser(user: User): void {
         this.users.push(user);
-        (this as unknown as Subject<User[]>).notify(this.users);
+        (this as unknown as Subject).notify();
     }
 
     listUsers(): User[] {
@@ -30,25 +30,25 @@ export class UserStore {
 }
 
 @Component()
-export class UsersList implements ComponentStructure {
+export class UsersList implements Component {
     state: { users?: User[] } = {};
 
-    constructor(private userService: Subject<User[]>) {}
+    constructor(private userService: Subject) {}
 
-    updateUsers = (users: User[]) => {
-        this.state.users = users;
+    update = (userService: Subject & UserStore) => {
+        this.state.users = userService.listUsers();
     }
 
     onInit(): () => void {
-        this.userService.subscribe(this.updateUsers);
+        this.userService.subscribe(this);
 
         return () => {
-            this.userService.unsubscribe(this.updateUsers);
+            this.userService.unsubscribe(this);
         }
     }
 
     render() {
-        if (!this.state.users) return null;
+        if (!this.state.users || this.state.users?.length === 0) return null;
 
         return `<ul>${this.state.users.map(
             user => `<li id="${user.id}">${user.name}</li>`

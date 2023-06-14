@@ -1,14 +1,16 @@
-import { ComponentStructure } from "./yaafuif";
+import type { Component } from "./yaafuif";
 import { Subject } from "./subject";
 
 export class TestingLibrary {
     static mount =
-        <C extends ComponentStructure>(
-            component: C & Subject<ComponentStructure>,
+        <C extends Component>(
+            component: C & Subject,
             watcher: (...args: any[]) => void = () => {}
         ) => {
-            component.subscribe(updatedComponent => {
-                watcher(updatedComponent.render());
+            component.subscribe({
+                update(component: C & Subject) {
+                    watcher(component.render())
+                }
             });
 
             return component.render();

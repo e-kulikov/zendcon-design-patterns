@@ -1,34 +1,36 @@
-type Subscriber<T> = (value: T) => void;
-
-export interface Subject<T> {
-    subscribe: (subscriber: Subscriber<T>) => this;
-    unsubscribe: (subscriber: Subscriber<T>) => this;
-    notify: (value: T) => void;
+export interface Subscriber {
+    update(subject: Subject): void;
 }
 
-export function Subject<T>() {
+export interface Subject {
+    subscribe: (subscriber: Subscriber) => this;
+    unsubscribe: (subscriber: Subscriber) => this;
+    notify: () => void;
+}
+
+export function Subject() {
     return function<K extends new (...args: any[]) => {}>(Constructor: K, context: ClassDecoratorContext) {
         if (context.kind !== 'class') throw Error('It must be class');
-        return class extends Constructor implements Subject<T>{
-            private subscribers: Subscriber<T>[] = [];
+        return class extends Constructor implements Subject {
+            private subscribers: Subscriber[] = [];
 
             constructor(...args: any[]) {
                 super(...args);
             }
 
-            notify(value?: T) {
+            notify() {
                 this.subscribers.forEach(
                     subscriber =>
-                        subscriber(value || this as unknown as T)
+                        subscriber.update(this)
                 );
             }
 
-            subscribe(subscriber: Subscriber<T>): this {
+            subscribe(subscriber: Subscriber): this {
                 this.subscribers.push(subscriber);
                 return this;
             }
 
-            unsubscribe(subscriber: Subscriber<T>): this {
+            unsubscribe(subscriber: Subscriber): this {
                 const index = this.subscribers.indexOf(subscriber);
                 if (index !== -1) {
                     this.subscribers.splice(index, 1);

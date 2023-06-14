@@ -1,18 +1,22 @@
 // YAAFUIF - Yet Another Awesome Frontend UI Framework
-import { Subject } from "./subject";
+import {Subject} from "./subject";
 
-export interface ComponentStructure {
-    state?: Record<string, any>;
-    render(): string | null;
-    onInit(): () => void;
-    onDestroy?: () => void;
+export interface ComponentConstructor {
+    new(...args: any[]): {
+        state?: Record<string, any>;
+        render(): string | null;
+        onInit(): () => void;
+        onDestroy?: () => void;
+    };
 }
 
-export function Component<T extends new (...args: any[]) => ComponentStructure> () {
-    return function(Constructor: T, context: ClassDecoratorContext): T {
+export type Component = InstanceType<ComponentConstructor>;
+
+export function Component<T extends ComponentConstructor> () {
+    return function(Constructor: T, context: ClassDecoratorContext) {
         if (context.kind !== 'class') throw Error('It must be a class');
 
-        return @Subject<ComponentStructure>()
+        return @Subject()
         class ExtendedComponent extends Constructor {
             public onDestroy?: () => void;
             constructor(...args: any[]) {
@@ -25,21 +29,21 @@ export function Component<T extends new (...args: any[]) => ComponentStructure> 
                     super.onDestroy?.();
                 };
 
-                this.state = new Proxy<ComponentStructure>(this, {
-                    set<C extends ComponentStructure, P extends keyof C>(
-                        target: C & Subject<C>,
+                this.state = new Proxy<Component & Subject>(this as unknown as Component & Subject, {
+                    set<C extends Subject, P extends keyof C>(
+                        target: C,
                         name: P,
                         value: any,
                         receiver: unknown
                     ) {
                         if (target[name] !== value) {
                             Reflect.set(target, name, value, receiver);
-                            target.notify(target);
+                            target.notify();
                         }
                         return true;
                     }
                 });
             }
-        }
+        } as T & Subject;
     }
 }

@@ -1,12 +1,11 @@
-import {TestingLibrary} from "./yaafuif-tl";
-import {User, UsersList, UserStore} from "./exercise";
-import {Subject} from "./subject";
-import {ComponentStructure} from "./yaafuif";
+import { TestingLibrary } from "./yaafuif-tl";
+import { UsersList, UserStore } from "./exercise";
+import { Subject } from "./subject";
 
 const store =
-    new UserStore() as unknown as UserStore & Subject<User[]>;
+    new UserStore() as UserStore & Subject;
 const component =
-    new UsersList(store) as unknown as UsersList & Subject<ComponentStructure>
+    new UsersList(store) as UsersList & Subject
 
 describe('Rendering', () => {
     const watcher = jest.fn();
@@ -22,6 +21,9 @@ describe('Rendering', () => {
         expect(watcher).toHaveBeenCalledWith(
             `<ul><li id="test-user-id">Test User</li></ul>`
         );
+
+        store.deleteUserById('test-user-id');
+        expect(watcher).toHaveBeenLastCalledWith(null);
     });
 
     describe('under the hood', () => {
