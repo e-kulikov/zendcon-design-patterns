@@ -1,18 +1,19 @@
 // YAAFUIF - Yet Another Awesome Frontend UI Framework
 import { Subject } from "./subject";
 
-export interface Component {
+export interface ComponentStructure {
+    state?: Record<string, any>;
     render(): string | null;
     onInit(): () => void;
     onDestroy?: () => void;
 }
 
-export function Component<T extends new (...args: any[]) => Component> () {
+export function Component<T extends new (...args: any[]) => ComponentStructure> () {
     return function(Constructor: T, context: ClassDecoratorContext): T {
         if (context.kind !== 'class') throw Error('It must be a class');
 
-        @Subject<Component>()
-        class ExtendedComponent extends Constructor implements Component {
+        return @Subject<ComponentStructure>()
+        class ExtendedComponent extends Constructor {
             public onDestroy?: () => void;
             constructor(...args: any[]) {
                 super(...args);
@@ -24,18 +25,21 @@ export function Component<T extends new (...args: any[]) => Component> () {
                     super.onDestroy?.();
                 };
 
-                return new Proxy<Component>(this, {
-                    set<C extends Component, P extends keyof C>(target: C, name: P, value: any) {
+                this.state = new Proxy<ComponentStructure>(this, {
+                    set<C extends ComponentStructure, P extends keyof C>(
+                        target: C & Subject<C>,
+                        name: P,
+                        value: any,
+                        receiver: unknown
+                    ) {
                         if (target[name] !== value) {
-                            target[name] = value;
-                            (target as unknown as Subject<Component>).notify(target);
+                            Reflect.set(target, name, value, receiver);
+                            target.notify(target);
                         }
                         return true;
                     }
                 });
             }
         }
-
-        return ExtendedComponent;
     }
 }

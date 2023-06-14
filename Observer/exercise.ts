@@ -1,14 +1,14 @@
-import { Component } from "./yaafuif";
+import { Component, ComponentStructure } from "./yaafuif";
 import { Subject } from "./subject";
 
-interface User {
+export interface User {
     id: string;
     name: string;
 }
 
 @Subject<User[]>()
 export class UserStore {
-    private users: User[] = [];
+    constructor(private users: User[] = []) {}
 
     getUserById(id: string): User | undefined {
         return this.users.find(user => user.id === id);
@@ -30,13 +30,13 @@ export class UserStore {
 }
 
 @Component()
-export class UsersList implements Component {
-    private users?: User[];
+export class UsersList implements ComponentStructure {
+    state: { users?: User[] } = {};
 
     constructor(private userService: Subject<User[]>) {}
 
-    updateUsers(users: User[]) {
-        this.users = users;
+    updateUsers = (users: User[]) => {
+        this.state.users = users;
     }
 
     onInit(): () => void {
@@ -48,9 +48,9 @@ export class UsersList implements Component {
     }
 
     render() {
-        if (!this.users) return null;
+        if (!this.state.users) return null;
 
-        return `<ul>${this.users.map(
+        return `<ul>${this.state.users.map(
             user => `<li id="${user.id}">${user.name}</li>`
         )}</ul>`
     }

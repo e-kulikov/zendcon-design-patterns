@@ -18,7 +18,8 @@ export function Subject<T>() {
 
             notify(value?: T) {
                 this.subscribers.forEach(
-                    subscriber => subscriber(value || this as unknown as T)
+                    subscriber =>
+                        subscriber(value || this as unknown as T)
                 );
             }
 
